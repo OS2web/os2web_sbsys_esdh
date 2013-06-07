@@ -31,7 +31,7 @@ function os2web_sbsys_esdh_form_os2web_settings_settings_form_alter(&$form, &$fo
   $form['meetings'] = array(
     '#type' => 'fieldset',
     '#title' => 'Referat import',
-    '#description' => 'Indstillinger der vedrører importen af Acadre referater og dagsordener.',
+    '#description' => 'Indstillinger der vedrører importen af SBSYS referater og dagsordener.',
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );

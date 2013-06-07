@@ -10,4 +10,4 @@ dependencies[] = ctools
 dependencies[] = features
 features[features_api][] = api:1
 
-files[] = plugins/mm/os2web_example_esdh_mm.inc
+files[] = plugins/mm/os2web_sbsys_esdh_mm.inc
