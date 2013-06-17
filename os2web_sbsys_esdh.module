@@ -8,7 +8,7 @@
 include_once('os2web_sbsys_esdh.features.inc');
 
 define('MM_IMPORT_DIR', 'public://sbsys');
-define('MM_DEFAULT_APPROVED', '62,59,64,53,54,56,57,63,58,51,55,61,68,69,42');
+define('MM_DEFAULT_APPROVED', 'Sundheds- og Forebyggelsesudvalget');
 
 /**
  * Implements hook_ctools_plugin_directory().
