@@ -91,10 +91,8 @@ function os2web_sbsys_esdh_mm_import_meeting($meeting) {
           error_log ($error->message);
        }
     }
-   # error_log(print_r($manifest,1));
     if (is_object($manifest)) {
 
-      #error_log(print_r($manifest,1));
       $committee = $manifest->xpath("Agendas/Agenda/Committee/@ID");
       $meeting_uri = $manifest->xpath("/Publication/OutputFileName");
       $meeting_data = $manifest->xpath("/Publication/Agendas/Agenda/Meeting");
@@ -132,19 +130,14 @@ function os2web_sbsys_esdh_mm_import_meeting($meeting) {
 
       $meeting = array(
         'sys_id' => $sys_id,
-        'committee' => $committee,
+        'committee' => $meeting_name,
         'title' => $meeting_name,
         'uri' => strstr($file , $meeting_uri, TRUE),
         'meeting_date' => $meeting_date_when,
         'meeting_date_until' => $meeting_date_until,
         'meeting_where' => $meeting_where,
       );
-      #error_log(print_r($meeting,1));
       $meeting_agendas = $manifest->xpath("/Publication/Agendas/Agenda/Items");
-      #error_log("public " . print_r($meeting_agendas,1));
-      #$meeting_state = $manifest->xpath('PublicationTypeAsValue');
-      #$meeting_state = (string) $meeting_state[0] ;
-      #error_log("state " . print_r($meeting_state,1));
       $meeting_type = $manifest->xpath('/Publication/PublicationTypeAsValue');
       $meeting_pdf = $manifest->xpath('/Meeting/MeetingAgendaTypes/MeetingAgendaType/PDFDocument');
       $meeting['state'] = (string) $meeting_state[0];
@@ -155,7 +148,6 @@ function os2web_sbsys_esdh_mm_import_meeting($meeting) {
       }
 
       foreach ($meeting_agendas as $meeting_agenda) {
-  #error_log(print_r($meeting_agenda, 1));
         $imported = _os2web_sbsys_esdh_mm_import_meeting_agenda($meeting, $meeting_agenda);
         if (is_array($imported)) {
           $imported['publish'] = TRUE;
@@ -193,12 +185,9 @@ function _os2web_sbsys_esdh_mm_import_meeting_agenda(&$meeting, $agenda_xml) {
     );
     // Import all agenda items.
   $agenda_bullet = $agenda_xml;
-  #error_log(print_r($agenda_bullet, 1));
     foreach ($agenda_bullet as $agenda_item) {
-        #error_log(print_r($agenda_item, 1));
       if (($item = _os2web_sbsys_esdh_mm_import_meeting_agenda_item($meeting, $agenda_item)) !== FALSE) {
         $agenda['items'][] = $item;
-       #error_log(print_r($agenda_item, 1));
       }
     }
     // Apply defaults, just in case we missed something.
@@ -229,9 +218,6 @@ function _os2web_sbsys_esdh_mm_import_meeting_agenda_item($meeting, $xml) {
   $xml_item['name'] = (string) $xml->Caption;
   $xml_item['document_type'] = (string) $xml->IsPublic;
 
-  #error_log("nummer " . print_r($xml_item['name'],1));
- # error_log(print_r($xml, 1));
-  #error_log(print_r($xml_item_document, 1));
   $item = array(
     'id' => $xml_item['number'],
     'title' => 'Punkt ' . $xml_item['number'] . ' ' . $xml_item['name'],
@@ -245,14 +231,10 @@ function _os2web_sbsys_esdh_mm_import_meeting_agenda_item($meeting, $xml) {
      'title' => $xml_item['name'],
     ),
   );
- # error_log(print_r($item, 1));
-#error_log("access" . $item['access']);
   // Deny closed content.
   if ($item['access'] === 'True') {
-        #error_log(print_r($xml_item_bullet,1));
     // Process attachments.
      foreach ($xml_item_bullet->ItemField as $bullet_xml) {
-        #error_log(print_r($bullet_xml,1));
        
 	$item['bullets'][] = array(
 	  'title' => (string) $bullet_xml->Caption,
@@ -260,7 +242,6 @@ function _os2web_sbsys_esdh_mm_import_meeting_agenda_item($meeting, $xml) {
 	);
         #$bullet_body = $bullet_body[0];
         
-        error_log(print_r($item['bullets'],1));
      #   if (($bullet = _os2web_esdh_provider_import_bullets($info, $bullet_xml)) !== FALSE) {
      #    if (is_int($bullet['sort']) && $bullet['sort'] > 0) {
      #      $item['bullets'][$bullet['sort'] - 1] = $bullet;
@@ -271,11 +252,8 @@ function _os2web_sbsys_esdh_mm_import_meeting_agenda_item($meeting, $xml) {
      #  }
      }
     // Process enclsures.
-#error_log(print_r($xml_item_document->Attachments, 1 )); 
     foreach ($xml_item_document as $enclosures) {
-       # error_log(print_r($xml_item_document, 1 )); 
       foreach ($enclosures->Enclosure as $enclosure) {
-       # error_log(print_r($enclosure, 1 )); 
         $enclosure_item['filename_in'] = (string) "Enclosures/".$enclosure->InstantiationFileName;
         $enclosure_item['access'] = (string) $enclosure->PublishingType;
         #if (strlen($enclosure_item['filename_in']) > 0 && $enclosure_item['access'] === 'SKAL PUBLICERES') {
@@ -287,7 +265,6 @@ function _os2web_sbsys_esdh_mm_import_meeting_agenda_item($meeting, $xml) {
             'title' => trim((string) $enclosure->Name),
             'access' => TRUE,
           );
- # error_log(print_r($item, 1));
         }
       }
     }

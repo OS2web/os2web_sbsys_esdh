@@ -32,7 +32,7 @@ function os2web_sbsys_esdh_form_os2web_settings_settings_form_alter(&$form, &$fo
   $form['meetings'] = array(
     '#type' => 'fieldset',
     '#title' => 'Referat import',
-    '#description' => 'Indstillinger der vedrører importen af eDoc referater og dagsordener.',
+    '#description' => 'Indstillinger der vedrører importen af SBsys referater og dagsordener.',
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
