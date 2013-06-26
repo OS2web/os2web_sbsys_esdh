@@ -135,13 +135,13 @@ function os2web_sbsys_esdh_mm_import_meeting($meeting) {
         'uri' => strstr($file , $meeting_uri, TRUE),
         'meeting_date' => $meeting_date_when,
         'meeting_date_until' => $meeting_date_until,
-        'meeting_where' => $meeting_where,
+        'location' => $meeting_where,
       );
       $meeting_agendas = $manifest->xpath("/Publication/Agendas/Agenda/Items");
       $meeting_type = $manifest->xpath('/Publication/PublicationTypeAsValue');
       $meeting_pdf = $manifest->xpath('/Meeting/MeetingAgendaTypes/MeetingAgendaType/PDFDocument');
       $meeting['state'] = (string) $meeting_state[0];
-      $meeting['type'] = (string) $meeting_type[0];
+      $meeting['type'] = (((string) $meeting_type[0]) === '0') ? 'Dagsorden' : 'Referat';
       $meeting['pdf'] = (string) $meeting_pdf[0];
       if (empty($meeting_agendas)) {
         watchdog('SBsys MM', 'Empty list of import items in %file.', array('%file' => $file), WATCHDOG_WARNING);
@@ -233,23 +233,18 @@ function _os2web_sbsys_esdh_mm_import_meeting_agenda_item($meeting, $xml) {
   );
   // Deny closed content.
   if ($item['access'] === 'True') {
+    //rewriting the access field to match esdh provider module
+    $item['access'] = 'SKAL PUBLICERES';
+    
     // Process attachments.
      foreach ($xml_item_bullet->ItemField as $bullet_xml) {
        
-	$item['bullets'][] = array(
-	  'title' => (string) $bullet_xml->Caption,
-          'body' => (string) $bullet_xml->Content,
-	);
-        #$bullet_body = $bullet_body[0];
-        
-     #   if (($bullet = _os2web_esdh_provider_import_bullets($info, $bullet_xml)) !== FALSE) {
-     #    if (is_int($bullet['sort']) && $bullet['sort'] > 0) {
-     #      $item['bullets'][$bullet['sort'] - 1] = $bullet;
-     #    }
-     #    else {
-     #      $item['bullets'][] = $bullet;
-     #    }
-     #  }
+	if (((string) $bullet_xml->HasContent) === 'True'){
+	  $item['bullets'][] = array(
+	    'title' => (string) $bullet_xml->Caption,
+	    'body' => (string) $bullet_xml->Content,
+	  );
+	}
      }
     // Process enclsures.
     foreach ($xml_item_document as $enclosures) {
