@@ -1,3 +1,9 @@
+Deprecated
+==========
+This repository is deprecated, and may be deleted.
+
+Use <https://github.com/OS2WebCore/os2web_sbsys_esdh>
+
 OS2Web SBSYS ESDH Provider
 ==============================
 
